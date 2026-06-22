@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ICT Exhibition - 10-Tier Mega GK Quiz</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f0c20, #15002b);
+            min-height: 100vh;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 12px;
+        }
+
+        .quiz-container {
+            background: #1a162b;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(138, 43, 226, 0.3);
+            width: 100%;
+            max-width: 480px;
+            margin-top: 8px;
+            border: 1px solid #332554;
+        }
+
+        .top-navbar {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #241e3d;
+            padding: 12px 14px;
+            border-radius: 10px;
+            margin-bottom: 16px;
+            border: 1px solid #3d3266;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 18px;
+            color: #a855f7;
+            font-weight: 800;
+            letter-spacing: 0.8px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #241e3d;
+            padding-bottom: 12px;
+            margin-bottom: 16px;
+            gap: 8px;
+        }
+
+        .badges-wrapper {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .level-badge, .score-badge {
+            padding: 5px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .level-badge {
+            background-color: #3b0764;
+            color: #e9d5ff;
+        }
+
+        .score-badge {
+            background-color: #241e3d;
+            color: #cbd5e1;
+            border: 1px solid #3d3266;
+        }
+
+        .progress {
+            font-size: 12px;
+            color: #94a3b8;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .question-text {
+            font-size: 16px;
+            font-weight: 600;
+            color: #f8fafc;
+            margin-bottom: 16px;
+            line-height: 1.4;
+            min-height: 54px;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .option-btn {
+            background-color: #241e3d;
+            border: 2px solid #3d3266;
+            padding: 12px 14px;
+            border-radius: 12px;
+            text-align: left;
+            font-size: 14px;
+            font-weight: 500;
+            color: #e2e8f0;
+            cursor: pointer;
+            transition: background-color 0.15s ease;
+            outline: none;
+            width: 100%;
+        }
+
+        .option-btn:active:not([disabled]) {
+            background-color: #312852;
+        }
+
+        .option-btn.correct {
+            background-color: #10b981 !important;
+            border-color: #059669 !important;
+            color: white;
+        }
+
+        .option-btn.incorrect {
+            background-color: #ef4444 !important;
+            border-color: #dc2626 !important;
+            color: white;
+        }
+
+        footer {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .next-btn {
+            background-color: #a855f7;
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            font-size: 15px;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            text-align: center;
+        }
+
+        .next-btn:disabled {
+            background-color: #475569;
+            color: #94a3b8;
+            cursor: not-allowed;
+        }
+
+        .result-screen {
+            text-align: center;
+            padding: 15px 0;
+        }
+
+        .result-screen h2 {
+            font-size: 24px;
+            color: #a855f7;
+            margin-bottom: 12px;
+        }
+
+        .score-text {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #cbd5e1;
+        }
+
+        .restart-btn {
+            background-color: #10b981;
+            color: white;
+            border: none;
+            padding: 14px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .hide {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <audio id="bg-music" loop playsinline>
+        <source src="https://pub-c5e31b5cdafb419a824f6118d22a3150.r2.dev/drift-phonk.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="quiz-container">
+        <div class="top-navbar">
+            <h1>GENERAL KNOWLEDGE</h1>
+        </div>
+
+        <div id="quiz-box">
+            <header>
+                <div class="badges-wrapper">
+                    <span class="level-badge" id="level-display">Level 1</span>
+                    <span class="score-badge" id="score-display">Score: 0</span>
+                </div>
+                <div class="progress">Q: <span id="current-question-num">1</span> / <span id="total-questions-num">100</span></div>
+            </header>
+
+            <div class="question-text" id="question">Loading question...</div>
+
+            <div class="options-container" id="options"></div>
+
+            <footer>
+                <button class="next-btn" id="next-button" onclick="nextQuestion()" disabled>Next Question</button>
+            </footer>
+        </div>
+
+        <div id="result-box" class="result-screen hide">
+            <h2>Quiz Completed! 🎉</h2>
+            <div class="score-text">Your Final Score: <span id="final-score">0</span> / <span id="final-total">200</span></div>
+            <button class="restart-btn" onclick="restartQuiz()">Play Again</button>
+        </div>
+    </div>
+
+    <script>
+        const leveledDatabase = {
+            level1: [
+                { question: "Which planet is known as the Red Planet?", options: ["Venus", "Mars", "Jupiter", "Saturn"], answer: 1 },
+                { question: "How many colors are there in a standard rainbow?", options: ["6", "7", "8", "5"], answer: 1 },
+                { question: "What is the national flower of India?", options: ["Rose", "Lotus", "Sunflower", "Jasmine"], answer: 1 },
+                { question: "Which country is home to the kangaroo?", options: ["South Africa", "Australia", "New Zealand", "Kenya"], answer: 1 },
+                { question: "How many days are in a leap year?", options: ["365", "366", "367", "364"], answer: 1 },
+                { question: "Which primary color is mixed with yellow to make green?", options: ["Red", "Blue", "Black", "Purple"], answer: 1 },
+                { question: "How many legs does a spider have?", options: ["6", "8", "10", "12"], answer: 1 },
+                { question: "What gas do humans release when breathing out?", options: ["Oxygen", "Hydrogen", "Carbon Dioxide", "Nitrogen"], answer: 2 },
+                { question: "Which animal is known as the 'Ship of the Desert'?", options: ["Horse", "Elephant", "Camel", "Donkey"], answer: 2 },
+                { question: "Which planet is closest to the Sun?", options: ["Mercury", "Venus", "Earth", "Mars"], answer: 0 }
+            ],
+            level2: [
+                { question: "What basic units build up digital image files?", options: ["Bytes", "Inches", "Pixels", "Vectors"], answer: 2 },
+                { question: "What turns a caterpillar into a butterfly?", options: ["Metamorphosis", "Mutation", "Evolution", "Photosynthesis"], answer: 0 },
+                { question: "What food type fuels bees to produce natural honey?", options: ["Leaves", "Pollen", "Nectar", "Sap"], answer: 2 },
+                { question: "What is the capital of France?", options: ["London", "Berlin", "Rome", "Paris"], answer: 3 },
+                { question: "Which computer hardware component acts as the 'brain' of the machine?", options: ["Hard Drive", "RAM", "Graphics Card", "CPU"], answer: 3 },
+                { question: "What binary code value states the 'Off' condition?", options: ["1", "0", "2", "-1"], answer: 1 },
+                { question: "Which fast cat is the speediest land animal?", options: ["Leopard", "Cheetah", "Lion", "Tiger"], answer: 1 },
+                { question: "What color is a sapphire gem typically?", options: ["Red", "Green", "Blue", "Yellow"], answer: 2 },
+                { question: "How many total continents cover Earth?", options: ["5", "6", "7", "8"], answer: 2 },
+                { question: "What does 'WWW' stand for in an internet address?", options: ["World Wide Web", "World Wide Wrestling", "Word Wide Web", "World Whole Web"], answer: 0 }
+            ],
+            level3: [
+                { question: "What is the capital city of Australia?", options: ["Sydney", "Melbourne", "Canberra", "Brisbane"], answer: 2 },
+                { question: "What is the hardest natural substance on Earth?", options: ["Gold", "Iron", "Diamond", "Quartz"], answer: 2 },
+                { question: "How many bones are there in an adult human body?", options: ["106", "206", "306", "216"], answer: 1 },
+                { question: "What is the standard boiling point of water?", options: ["90°C", "100°C", "120°C", "80°C"], answer: 1 },
+                { question: "Which organ filters blood in the human body?", options: ["Heart", "Lungs", "Liver", "Kidneys"], answer: 3 },
+                { question: "Which tech giant created the Windows operating system?", options: ["Apple", "Google", "Microsoft", "IBM"], answer: 2 },
+                { question: "Which state of matter has a fixed volume but no fixed shape?", options: ["Solid", "Liquid", "Gas", "Plasma"], answer: 1 },
+                { question: "Which body organ pumps blood around the human network?", options: ["Brain", "Lungs", "Heart", "Stomach"], answer: 2 },
+                { question: "What liquid metal populates early thermometer builds?", options: ["Mercury", "Liquid Iron", "Gallium", "Silver"], answer: 0 },
+                { question: "Which storage type stays completely wiped after computer restarts?", options: ["SSD", "Hard Drive", "RAM", "ROM"], answer: 2 }
+            ],
+            level4: [
+                { question: "What is the value of Pi rounded to two decimal places?", options: ["3.12", "3.14", "3.16", "3.18"], answer: 1 },
+                { question: "What is the main gas found in the air we breathe?", options: ["Oxygen", "Carbon Dioxide", "Nitrogen", "Argon"], answer: 2 },
+                { question: "What is the shape of DNA structurally called?", options: ["Single Helix", "Double Helix", "Triple Helix", "Circle"], answer: 1 },
+                { question: "How many string lines does a standard acoustic guitar have?", options: ["4", "5", "6", "7"], answer: 2 },
+                { question: "Which system manages files, hardware, and runtime resources?", options: ["Browser", "Operating System", "Compiler", "Antivirus"], answer: 1 },
+                { question: "How many teeth does an adult human normally have?", options: ["28", "30", "32", "34"], answer: 2 },
+                { question: "Which instrument tracks seismic earthquake tremors?", options: ["Barometer", "Seismograph", "Speedometer", "Altimeter"], answer: 1 },
+                { question: "Which metal offers the best conductive flow for standard wires?", options: ["Iron", "Copper", "Gold", "Lead"], answer: 1 },
+                { question: "Which programming approach uses blocks to loop repeating actions?", options: ["Conditionals", "Variables", "Loops", "Functions"], answer: 2 },
+                { question: "Which structural unit maps the basis of all living organisms?", options: ["Atom", "Cell", "Tissue", "Organ"], answer: 1 }
+            ],
+            level5: [
+                { question: "What is the currency of Japan?", options: ["Yuan", "Won", "Yen", "Ringgit"], answer: 2 },
+                { question: "Which chemical element has the symbol 'Au'?", options: ["Silver", "Copper", "Gold", "Aluminum"], answer: 2 },
+                { question: "What gas do plants absorb from the atmosphere for photosynthesis?", options: ["Oxygen", "Nitrogen", "Carbon Dioxide", "Hydrogen"], answer: 2 },
+                { question: "In which year did the Titanic sink?", options: ["1912", "1905", "1920", "1915"], answer: 0 },
+                { question: "Which instrument is used to measure atmospheric pressure?", options: ["Thermometer", "Barometer", "Anemometer", "Hygrometer"], answer: 1 },
+                { question: "What is the capital of Italy?", options: ["Venice", "Florence", "Milan", "Rome"], answer: 3 },
+                { question: "Which ocean lies between Africa and Australia?", options: ["Atlantic Ocean", "Indian Ocean", "Pacific Ocean", "Arctic Ocean"], answer: 1 },
+                { question: "What is the capital city of Canada?", options: ["Toronto", "Vancouver", "Montreal", "Ottawa"], answer: 3 },
+                { question: "Which is the tallest mountain peak in the world?", options: ["K2", "Mount Everest", "Kangchenjunga", "Lhotse"], answer: 1 },
+                { question: "What is the center of an atom called?", options: ["Electron", "Proton", "Neutron", "Nucleus"], answer: 3 }
+            ],
+            level6: [
+                { question: "Who painted the famous artwork 'The Starry Night'?", options: ["Vincent van Gogh", "Leonardo da Vinci", "Pablo Picasso", "Claude Monet"], answer: 0 },
+                { question: "Who wrote the play 'Romeo and Juliet'?", options: ["Charles Dickens", "William Shakespeare", "Mark Twain", "Jane Austen"], answer: 1 },
+                { question: "Who was the first person to step onto the Moon?", options: ["Buzz Aldrin", "Neil Armstrong", "Yuri Gagarin", "John Glenn"], answer: 1 },
+                { question: "Who discovered penicillin?", options: ["Louis Pasteur", "Alexander Fleming", "Albert Einstein", "Marie Curie"], answer: 1 },
+                { question: "Which country gifted the Statue of Liberty to the USA?", options: ["France", "Great Britain", "Germany", "Italy"], answer: 0 },
+                { question: "Who is known as the father of modern computing?", options: ["Bill Gates", "Steve Jobs", "Alan Turing", "Charles Babbage"], answer: 2 },
+                { question: "Who is the author of the 'Harry Potter' book series?", options: ["J.R.R. Tolkien", "George R.R. Martin", "J.K. Rowling", "C.S. Lewis"], answer: 2 },
+                { question: "Which country is credited with inventing paper?", options: ["Egypt", "Greece", "China", "Italy"], answer: 2 },
+                { question: "What is the fast data storage layer built directly inside a CPU?", options: ["RAM", "SSD", "Cache", "Flash Memory"], answer: 2 },
+                { question: "What is the capital city of Germany?", options: ["Munich", "Frankfurt", "Berlin", "Hamburg"], answer: 2 }
+            ],
+            level7: [
+                { question: "Who developed the foundational Theory of Relativity?", options: ["Isaac Newton", "Albert Einstein", "Galileo Galilei", "Nikola Tesla"], answer: 1 },
+                { question: "Which language features the most native speakers globally?", options: ["English", "Spanish", "Mandarin Chinese", "Hindi"], answer: 2 },
+                { question: "What is the administrative capital of South Africa?", options: ["Cape Town", "Pretoria", "Johannesburg", "Durban"], answer: 1 },
+                { question: "Who served as the very first President of the United States?", options: ["Abraham Lincoln", "George Washington", "Thomas Jefferson", "John Adams"], answer: 1 },
+                { question: "What is the capital city of the Russian Federation?", options: ["St. Petersburg", "Moscow", "Novosibirsk", "Kazan"], answer: 1 },
+                { question: "Which small hardware battery preserves internal BIOS settings when powered off?", options: ["Lithium Cell (CMOS)", "Capacitor Array", "Main Battery Pack", "Auxiliary Regulator"], answer: 0 },
+                { question: "What physical metric converts printed text pages into digital assets?", options: ["Optical Scanner", "Plotter Device", "Digitizer Board", "Thermal Matrix"], answer: 0 },
+                { question: "What hardware unit modulates data patterns across communication lanes?", options: ["Router Array", "Modem Link", "Network Switch", "Distribution Hub"], answer: 1 },
+                { question: "What astronomical term defines patterned star layouts in the sky?", options: ["Galaxies", "Asteroids", "Constellations", "Nebulas"], answer: 2 },
+                { question: "What is the capital city of Greece?", options: ["Sparta", "Thessaloniki", "Athens", "Rhodes"], answer: 2 }
+            ],
+            level8: [
+                { question: "How many chemical elements currently comprise the standard periodic table?", options: ["112", "118", "120", "108"], answer: 1 },
+                { question: "What is the largest and deepest ocean body on Earth?", options: ["Atlantic Ocean", "Indian Ocean", "Arctic Ocean", "Pacific Ocean"], answer: 3 },
+                { question: "Which micro-state ranks as the smallest independent nation worldwide?", options: ["Monaco", "Malta", "Vatican City", "San Marino"], answer: 2 },
+                { question: "Which system runtime environment acts as the core base for Android packages?", options: ["Swift Compiler", "Python Sandbox", "Java/Kotlin Virtual Environment", "C++ Library Engine"], answer: 2 },
+                { question: "Which geographic river channel holds the title for longest linear run?", options: ["Amazon River", "Nile River", "Yangtze River", "Mississippi River"], answer: 1 },
+                { question: "Which land continent remains entirely locked under year-round ice coats?", options: ["Asia", "Europe", "Antarctica", "Australia"], answer: 2 },
+                { question: "What global geographic environment constitutes the largest barren desert area?", options: ["Sahara Desert", "Gobi Plateau", "Antarctic Polar Desert", "Arabian Sands"], answer: 2 },
+                { question: "What marine species constitutes the largest living mammal documented?", options: ["African Bush Elephant", "Blue Whale", "Finback Whale", "Colossal Squid Layout"], answer: 1 },
+                { question: "Which island country is historically called the 'Land of the Rising Sun'?", options: ["China", "Japan", "South Korea", "Thailand"], answer: 1 },
+                { question: "Which avian creature produces the largest physical egg structures?", options: ["Emu Group", "Ostrich", "Golden Eagle", "Emperor Penguin"], answer: 1 }
+            ],
+            level9: [
+                { question: "Which vast sovereign nation covers physical territory across two separate continents?", options: ["Canada Territory", "Russian Federation", "Federative Brazil", "People's China"], answer: 1 },
+                { question: "What conceptual facility describes remote, decentralized data infrastructure over networks?", options: ["Local Flash Arrays", "Cloud Data Center Pools", "Desktop Server Arrays", "Satellite Relay Stations"], answer: 1 },
+                { question: "What serves as the centralized capital city of the United Kingdom?", options: ["Edinburgh Hub", "Belfast Sector", "Cardiff District", "London City"], answer: 3 },
+                { question: "Which historic African metropolis represents the capital of Egypt?", options: ["Alexandria Coast", "Cairo Center", "Giza Plateau Zone", "Luxor Complex"], answer: 1 },
+                { question: "Which chemical mineral structural unit reinforces skeletal bone tissue density?", options: ["Ferrum (Iron)", "Calcium Matrix", "Zinc Oxide", "Sodium Compounds"], answer: 1 },
+                { question: "What is the basic chemical designation for purified table salt compounds?", options: ["H2O Hydride", "CO2 Compound", "NaCl (Sodium Chloride)", "HCl Solutions"], answer: 2 },
+                { question: "What geographic ocean basin encircles the isolated island nation of Madagascar?", options: ["Atlantic Basin", "Pacific Trench Domain", "Indian Ocean Domain", "Arctic Drift Sector"], answer: 2 },
+                { question: "Which planetary geographical point records the absolute coldest environmental metrics?", options: ["Geographic North Pole", "Antarctic South Pole Zone", "Equatorial Baseline", "Tropical Lowlands"], answer: 1 },
+                { question: "What keyboard macro combinations activate the default text duplication filter on Windows?", options: ["Ctrl + V Sequence", "Ctrl + X Sequence", "Ctrl + C Sequence", "Ctrl + Z Sequence"], answer: 2 },
+                { question: "Which classic monumental temple ruins crown the high Acropolis fields in Athens?", options: ["Roman Colosseum", "Parisian Eiffel Tower", "The Parthenon Temple", "Agra Taj Mahal Layout"], answer: 2 }
+            ],
+            level10: [
+                { question: "What specialized language protocol generates interactive structure inside basic web layouts?", options: ["SQL Tables", "HTML Formats", "JavaScript Engine Scripting", "CSS Style Files"], answer: 2 },
+                { question: "What functional network system translates human-readable domain text into numerical IP routing points?", options: ["DHCP Leases", "DNS (Domain Name System)", "FTP Clients", "NAT Mapping Systems"], answer: 1 },
+                { question: "What cryptographic security layout uses asymmetric math layers to encode web interactions?", options: ["AES File Blocks", "RSA Encryption Keys", "MD5 Hash Strings", "Base64 Array Layouts"], answer: 1 },
+                { question: "What computational architecture pattern processes multi-threaded instructions concurrently across silicon chips?", options: ["Parallel Computing Processing", "Sequential Logic Queues", "Single-Core Thread Shifting", "Linear Vector Pipelines"], answer: 0 },
+                { question: "What core database language paradigm relies heavily on primary keys and table schema links?", options: ["NoSQL Document Nodes", "Relational Database Management (RDBMS)", "Flat File Strings", "Graph Pointer Frameworks"], answer: 1 },
+                { question: "What physics constant tracks the velocity of light waves running through perfect vacuum zones?", options: ["Planck Constant (h)", "Universal Gravitation (G)", "Speed of Light (c)", "Boltzmann Value (k)"], answer: 2 },
+                { question: "What cell lifecycle dynamic ensures matching chromosome splits across binary somatic pairs?", options: ["Meiosis Reductions", "Mitosis Cellular Division", "Cytoplasmic Synthesis", "Apoptosis Sequences"], answer: 1 },
+                { question: "Which mathematical discipline establishes rate calculation values by plotting slopes and area integrals?", options: ["Linear Topology", "Differential & Integral Calculus", "Discrete Game Matrices", "Euclidean Geometry"], answer: 1 },
+                { question: "What programming compiler step translates standard software raw code text into target machine binaries?", options: ["Lexical Interpretation", "Binary Compilation", "Source Debug Run", "Runtime Linking Layout"], answer: 1 },
+                { question: "What high-efficiency system framework maps incoming network loads safely across balanced server nodes?", options: ["Packet Sniffer Engines", "Reverse Load Balancers", "Proxy Filters", "Gateway Routers"], answer: 1 }
+            ]
+        };
+
+        const totalQuestionsCount = 100; 
+        const pointsPerQuestion = 2; 
+        let quizSessionList = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let isMusicPlaying = false;
+
+        let audioCtx = null;
+
+        const quizBox = document.getElementById("quiz-box");
+        const resultBox = document.getElementById("result-box");
+        const questionEl = document.getElementById("question");
+        const optionsContainer = document.getElementById("options");
+        const currentQuestionNumEl = document.getElementById("current-question-num");
+        const totalQuestionsNumEl = document.getElementById("total-questions-num");
+        const levelDisplayEl = document.getElementById("level-display");
+        const scoreDisplayEl = document.getElementById("score-display");
+        const nextButton = document.getElementById("next-button");
+        const finalScoreEl = document.getElementById("final-score");
+        const finalTotalEl = document.getElementById("final-total");
+        const bgMusic = document.getElementById("bg-music");
+
+        bgMusic.volume = 0.15;
+
+        function initAudioContext() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function playSfx(type) {
+            initAudioContext();
+            if (!audioCtx) return;
+
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            if (type === 'correct') {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); 
+                osc.frequency.setValueAtTime(880.00, audioCtx.currentTime + 0.08); 
+                gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.35);
+                osc.start(audioCtx.currentTime);
+                osc.stop(audioCtx.currentTime + 0.35);
+            } else if (type === 'incorrect') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(90, audioCtx.currentTime); 
+                osc.frequency.linearRampToValueAtTime(60, audioCtx.currentTime + 0.25);
+                gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.25);
+                osc.start(audioCtx.currentTime);
+                osc.stop(audioCtx.currentTime + 0.25);
+            }
+        }
+
+        function shuffle(array) {
+            let shuffled = array.map(q => ({...q}));
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        function buildLeveledSession() {
+            let lvl1 = shuffle(leveledDatabase.level1);
+            let lvl2 = shuffle(leveledDatabase.level2);
+            let lvl3 = shuffle(leveledDatabase.level3);
+            let lvl4 = shuffle(leveledDatabase.level4);
+            let lvl5 = shuffle(leveledDatabase.level5);
+            let lvl6 = shuffle(leveledDatabase.level6);
+            let lvl7 = shuffle(leveledDatabase.level7);
+            let lvl8 = shuffle(leveledDatabase.level8);
+            let lvl9 = shuffle(leveledDatabase.level9);
+            let lvl10 = shuffle(leveledDatabase.level10);
+            
+            quizSessionList = [...lvl1, ...lvl2, ...lvl3, ...lvl4, ...lvl5, ...lvl6, ...lvl7, ...lvl8, ...lvl9, ...lvl10];
+            
+            currentQuestionIndex = 0;
+            score = 0;
+            scoreDisplayEl.textContent = "Score: 0";
+            totalQuestionsNumEl.textContent = totalQuestionsCount;
+            finalTotalEl.textContent = totalQuestionsCount * pointsPerQuestion;
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            nextButton.disabled = true;
+            optionsContainer.innerHTML = "";
+            currentQuestionNumEl.textContent = currentQuestionIndex + 1;
+
+            let currentLevelNumber = Math.floor(currentQuestionIndex / 10) + 1;
+            levelDisplayEl.textContent = "Level " + currentLevelNumber;
+
+            if (currentLevelNumber <= 3) {
+                levelDisplayEl.style.backgroundColor = "#2e1065";
+                levelDisplayEl.style.color = "#f3e8ff";
+            } else if (currentLevelNumber <= 6) {
+                levelDisplayEl.style.backgroundColor = "#701a75";
+                levelDisplayEl.style.color = "#fdf4ff";
+            } else if (currentLevelNumber <= 9) {
+                levelDisplayEl.style.backgroundColor = "#831843";
+                levelDisplayEl.style.color = "#fff1f2";
+            } else {
+                levelDisplayEl.style.backgroundColor = "#991b1b";
+                levelDisplayEl.style.color = "#fef2f2";
+            }
+
+            let currentQuiz = quizSessionList[currentQuestionIndex];
+            questionEl.textContent = currentQuiz.question;
+
+            currentQuiz.options.forEach((option, index) => {
+                const button = document.createElement("button");
+                button.classList.add("option-btn");
+                button.textContent = option;
+                button.addEventListener("click", () => selectOption(button, index));
+                optionsContainer.appendChild(button);
+            });
+        }
+
+        function selectOption(selectedButton, selectedIndex) {
+            initAudioContext();
+            
+            // Auto-trigger background music on the very first user interaction block
+            if (!isMusicPlaying && bgMusic.paused) {
+                bgMusic.play().catch(error => console.log("Audio gesture rule activated."));
+                isMusicPlaying = true;
+            }
+
+            let correctAnswerIndex = quizSessionList[currentQuestionIndex].answer;
+            const allButtons = optionsContainer.querySelectorAll(".option-btn");
+
+            allButtons.forEach(btn => btn.disabled = true);
+
+            if (selectedIndex === correctAnswerIndex) {
+                selectedButton.classList.add("correct");
+                playSfx('correct');
+                score += pointsPerQuestion; 
+                scoreDisplayEl.textContent = `Score: ${score}`;
+            } else {
+                selectedButton.classList.add("incorrect");
+                allButtons[correctAnswerIndex].classList.add("correct");
+                playSfx('incorrect');
+            }
+
+            nextButton.disabled = false;
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+
+            if (currentQuestionIndex < totalQuestionsCount) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            quizBox.classList.add("hide");
+            resultBox.classList.remove("hide");
+            finalScoreEl.textContent = score;
+        }
+
+        function restartQuiz() {
+            resultBox.classList.add("hide");
+            quizBox.classList.remove("hide");
+            buildLeveledSession();
+        }
+
+        buildLeveledSession();
+    </script>
+</body>
+</html>
